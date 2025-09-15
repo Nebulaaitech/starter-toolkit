@@ -2,10 +2,13 @@
 // @nebulaai/starter-toolkit - Simple tools for startup beginners
 
 // Simple ID generator
-function generateId(prefix: string = 'id'): string {
-  return `${prefix}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+function generateId(prefix: string): string {
+  const timestamp = Date.now();
+  const random = Math.floor(Math.random() * 1000);
+  return `${prefix}_${timestamp}_${random}`;
 }
 
+// Types for our toolkit
 export interface SimpleNameResult {
   id: string;
   name: string;
@@ -22,31 +25,38 @@ export interface BasicBrandKit {
   description: string;
 }
 
-// Simple name generation for beginners
+// Simple name generator for beginners
 export function generateSimpleNames(industry: string, count: number = 10): SimpleNameResult[] {
-  const simpleTemplates = {
+  if (count <= 0) return [];
+
+  const templates = {
     'tech': ['Quick', 'Easy', 'Smart', 'Fast', 'Simple'],
     'creative': ['Bright', 'Fresh', 'Bold', 'Pure', 'Clear'],
     'business': ['Pro', 'Prime', 'Top', 'Best', 'Good']
   };
 
-  const suffixes = ['ly', 'ify', 'hub', 'pro', 'go', 'app', 'tech', 'labs'];
-  const category = industry in simpleTemplates ? industry : 'tech';
-  const prefixes = simpleTemplates[category as keyof typeof simpleTemplates];
-
-  return Array.from({ length: count }, (_, i) => {
-    const prefix = prefixes[i % prefixes.length];
-    const suffix = suffixes[i % suffixes.length];
+  const suffixes = ['Tech', 'Lab', 'Hub', 'Co', 'Works', 'Solutions', 'Studio', 'Group'];
+  
+  const categoryTemplates = templates[industry as keyof typeof templates] || templates.tech;
+  const normalizedCategory = Object.keys(templates).includes(industry) ? industry : 'tech';
+  
+  const results: SimpleNameResult[] = [];
+  
+  for (let i = 0; i < count; i++) {
+    const prefix = categoryTemplates[Math.floor(Math.random() * categoryTemplates.length)];
+    const suffix = suffixes[Math.floor(Math.random() * suffixes.length)];
     const name = `${prefix}${suffix}`;
     
-    return {
+    results.push({
       id: generateId('simple'),
       name,
       domain: `${name.toLowerCase()}.com`,
       available: Math.random() > 0.3,
-      category
-    };
-  });
+      category: normalizedCategory
+    });
+  }
+  
+  return results;
 }
 
 // Basic branding for beginners
