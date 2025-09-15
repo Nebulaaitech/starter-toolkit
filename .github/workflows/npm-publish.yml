@@ -36,6 +36,9 @@ jobs:
     - name: Build package
       run: npm run build
 
+    - name: Publish package
+      run: npm publish
+
   publish:
     needs: test
     runs-on: ubuntu-latest
